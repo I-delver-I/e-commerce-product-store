@@ -60,11 +60,6 @@ const AllProducts: NextPage = ({products}: InferGetStaticPropsType<typeof getSta
                 price={product.price}
                 rating={product.rating}
             />;
-                /*<div key={product.id}>
-                    <p>{product.title}</p>
-                    <p>{product.brand}</p>
-                    <p>{product.id}</p>
-                </div>*/
         })}
     </>);
 };
