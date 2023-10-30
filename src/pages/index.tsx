@@ -1,7 +1,6 @@
 import {GetStaticProps, InferGetStaticPropsType, NextPage} from "next";
 import axios from "axios";
 import ProductCard from "@/components/product/ProductCard";
-import usePagination from "@/hooks/usePagination";
 import Head from "next/head";
 import PaginationBar from "@/components/PaginationBar";
 import {useCallback, useState} from "react";
@@ -43,11 +42,9 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const AllProducts: NextPage = ({products}: InferGetStaticPropsType<typeof getStaticProps>) => {
     const totalPagesCount = Math.ceil(total / productsCountPerPage);
-    const [skip, setSkip] = useState(0);
-
-    const handleProductsRendering = useCallback(() =>
+    const [skip] = useState(0);
+    useCallback(() =>
         fetchProducts(apiUrl, skip), []);
-
     return (<>
         <Head>
             <title>All Products</title>

@@ -1,5 +1,4 @@
-import {useCallback, useState} from "react";
-import {number} from "prop-types";
+import {useState} from "react";
 
 export default function usePagination<T>(data: T[], itemsPerPage: number) {
     const [currentPage, setCurrentPage] = useState<number>(1);
