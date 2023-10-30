@@ -3,6 +3,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import {CardActionArea} from '@mui/material';
 import ProductCardContent from "@/components/product/ProductCardContent";
+import Link from 'next/link';
 
 export default function ProductCard({photo, ...props}: ProductCardType) {
     return (
@@ -11,10 +12,9 @@ export default function ProductCard({photo, ...props}: ProductCardType) {
             "&:hover": {
                 transform: "scale(1.05)",
                 borderColor: "green",
-                backgroundColor: "#e0e0e0",
             }
         }}>
-            <CardActionArea sx={{
+            <CardActionArea onClick={() => <Link href="/product/product-details" />} sx={{
                 height: "100%", width: "100%",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
             }}>
@@ -31,12 +31,13 @@ export default function ProductCard({photo, ...props}: ProductCardType) {
                     src={photo}
                     alt="green iguana"
                 />
-                <ProductCardContent title={props.title}
-                                    brand={props.brand}
-                                    category={props.category}
-                                    discount={props.discount}
-                                    price={props.price}
-                                    rating={props.rating}/>
+                <ProductCardContent
+                    title={props.title}
+                    brand={props.brand}
+                    category={props.category}
+                    discount={props.discount}
+                    price={props.price}
+                    rating={props.rating}/>
             </CardActionArea>
         </Card>
     );
