@@ -8,9 +8,6 @@
 
 .active-button {
   background-color: lime;
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -27,7 +24,7 @@
   background-color: green;
   color: #fff;
   border: none;
-  border-radius: 40px;
+  border-radius: 5px;
   padding: 5px 10px;
   margin: 0 5px;
   font-size: 16px;

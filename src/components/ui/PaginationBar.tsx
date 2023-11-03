@@ -1,3 +1,4 @@
+import {Box, Button} from '@mui/material';
 import React from 'react';
 
 type PaginationBarProps = {
@@ -5,7 +6,6 @@ type PaginationBarProps = {
     maxPage: number;
     onNext: () => void;
     onPrev: () => void;
-    onJump: (page: number) => void;
 };
 
 const PaginationBar: React.FC<PaginationBarProps> =
@@ -14,27 +14,27 @@ const PaginationBar: React.FC<PaginationBarProps> =
          maxPage,
          onNext,
          onPrev,
-         onJump,
      }) => {
         return (
-            <div className={"pagination-bar"}>
-                <button className="pagination-button direction" onClick={onPrev} disabled={currentPage === 1}>
+            <Box className="pagination-bar" display={"flex"} flexDirection={"column"} alignItems={"center"} maxWidth={1000}>
+                <Button className="pagination-button direction" onClick={onPrev} disabled={currentPage === 1}>
                     Previous
-                </button>
-                {Array.from({length: maxPage}, (_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => onJump(index + 1)}
-                        disabled={currentPage === index + 1}
-                        className={`${currentPage === index + 1 ? 'active-button' : ''}`}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
-                <button className="pagination-button direction" onClick={onNext} disabled={currentPage === maxPage}>
+                </Button>
+                <Box padding="10px" display={"flex"} justifyContent={"center"} flexWrap={"wrap"}>
+                    {Array.from({length: maxPage}, (_, index) => (
+                        <Button
+                            key={index + 1}
+                            disabled={currentPage === index + 1}
+                            className={`${currentPage === index + 1 ? 'active-button' : ''}`}
+                        >
+                            {index + 1}
+                        </Button>
+                    ))}
+                </Box>
+                <Button className="pagination-button direction" onClick={onNext} disabled={currentPage === maxPage}>
                     Next
-                </button>
-            </div>
+                </Button>
+            </Box>
         );
     };
 

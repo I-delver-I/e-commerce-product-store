@@ -5,6 +5,7 @@ import PaginationBar from "@/components/ui/PaginationBar";
 import {Dispatch, SetStateAction, useState} from "react";
 import ProductCards from "@/components/product/card/ProductCards";
 import {usePagination} from "@/hooks/usePagination";
+import Box from "@mui/material/Box";
 
 const allProductsApiUrl = "https://dummyjson.com/products";
 
@@ -136,13 +137,15 @@ const AllProducts: NextPage = ({skip: initialSkip, limit, total, products: initi
         <main style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
             <ProductCards products={currentData()}/>
         </main>
-        <PaginationBar
-            currentPage={currentPage}
-            maxPage={maxPage}
-            onNext={next}
-            onPrev={prev}
-            onJump={jump}
-        />
+        <Box sx={{display: "flex", justifyContent: "center"}}>
+            <PaginationBar
+                currentPage={currentPage}
+                maxPage={maxPage}
+                onNext={next}
+                onPrev={prev}
+                onJump={jump}
+            />
+        </Box>
     </>);
 };
 
