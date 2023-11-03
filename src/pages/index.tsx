@@ -2,39 +2,14 @@ import {GetStaticProps, InferGetStaticPropsType, NextPage} from "next";
 import axios from "axios";
 import Head from "next/head";
 import PaginationBar from "@/components/ui/PaginationBar";
-import {ReactNode, useCallback, useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 import ProductCards from "@/components/product/card/ProductCards";
-import {lime} from "@mui/material/colors";
-import productId from "@/pages/[productId]";
-import {number} from "prop-types";
+import {usePagination} from "@/hooks/usePagination";
 
-const apiUrl = "https://dummyjson.com/products";
+const allProductsApiUrl = "https://dummyjson.com/products";
 
 export async function getAllProductIds() {
-    // try {
-    //     const apiUrl = "/api/product";
-    //     const response = await axios.get<number[]>(apiUrl);
-    //
-    //     if (response.status !== 200) {
-    //         throw new Error('Failed to fetch product data');
-    //     }
-    //
-    //     const productIds = response.data;
-    //
-    //     return productIds.map(productId => {
-    //         return {
-    //             params: {
-    //                 productId: productId.toString(),
-    //             },
-    //         };
-    //     });
-    // }
-    // catch (err) {
-    //     console.error('Error fetching product IDs:', err);
-    //     return [];
-    // }
-
-    const products = await fetchAllProducts(apiUrl);
+    const products = await fetchAllProducts(allProductsApiUrl);
 
     return products.map(product => {
         return {
@@ -83,7 +58,7 @@ const getProductApiDetails = async () => {
     let result: ProductApiDetails = {total: 0, skip: 0, limit: 0};
 
     try {
-        result = (await axios.get<ProductApiDetails>(apiUrl)).data;
+        result = (await axios.get<ProductApiDetails>(allProductsApiUrl)).data;
     } catch (err) {
         console.error("Error fetching api details:", err);
     }
@@ -94,46 +69,80 @@ const getProductApiDetails = async () => {
 const productsCountPerPage = 10;
 
 export const getStaticProps: GetStaticProps = async () => {
-    const {total, limit} = await getProductApiDetails();
+    const {total, limit, skip} = await getProductApiDetails();
 
-    const products = await fetchProducts(apiUrl, 0);
-    // const products = await fetchAllProducts(apiUrl);
+    const products = await fetchProducts(allProductsApiUrl, 0);
 
     return {
         props: {
-            limit: limit,
+            skip: skip,
             total: total,
-            products: products.slice(0, productsCountPerPage),
+            limit: limit,
+            products: products,
         }
     };
 };
 
 export async function getProductData(id: number) {
-    const products = await fetchAllProducts(apiUrl);
-    const result = products.find(product =>
-        product.id === id);
+    let result: Product = {
+        id: 0, title: '', description: '', price: 0,
+        discountPercentage: 0, rating: 0, stock: 0, brand: '', category: '',
+        thumbnail: '', images: [],
+    };
 
-    if (!result) {
-        throw new Error(`Product with id ${id} not found`);
+    try {
+        const response =
+            await axios.get<Product>(`${allProductsApiUrl}/${id}`);
+        result = response.data;
+    } catch (err) {
+        console.error("Error fetching products:", err);
     }
 
     return result;
 }
 
-const AllProducts: NextPage = ({limit, total, products}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const AllProducts: NextPage = ({skip: initialSkip, limit, total, products: initialProducts}:
+                                   InferGetStaticPropsType<typeof getStaticProps>) => {
     const totalPagesCount = Math.ceil(total / productsCountPerPage);
-    const [skip] = useState(0);
 
-    console.log("All products render")
+    const [skip, setSkip] =
+        useState<number>(initialSkip);
+
+    async function handleProductFetch(onProductsFetch: Dispatch<SetStateAction<Product[]>>) {
+        const newSkip = skip + limit;
+        setSkip(prev => newSkip);
+
+        const fetchedProducts = await fetchProducts(allProductsApiUrl, newSkip);
+        onProductsFetch(prev => [...prev, ...fetchedProducts]);
+    }
+
+    const {
+        currentPage,
+        maxPage,
+        next,
+        prev,
+        jump,
+        currentData,
+    } = usePagination<Product>(
+        {
+            initialData: initialProducts, pagesCount: totalPagesCount,
+            itemsPerPage: productsCountPerPage, onDataFetch: handleProductFetch
+        });
 
     return (<>
         <Head>
             <title>All Products</title>
         </Head>
         <main style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
-            <ProductCards products={products}/>
+            <ProductCards products={currentData()}/>
         </main>
-        <PaginationBar data={products} totalPagesCount={totalPagesCount}/>
+        <PaginationBar
+            currentPage={currentPage}
+            maxPage={maxPage}
+            onNext={next}
+            onPrev={prev}
+            onJump={jump}
+        />
     </>);
 };
 
