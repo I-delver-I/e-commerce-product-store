@@ -1,13 +1,3 @@
-type ProductCardType = {
-    title: string;
-    photo: string;
-    category: string;
-    brand: string;
-    price: number;
-    discount: number;
-    rating: number;
-};
-
 type Product = {
     id: number;
     title: string;
@@ -22,7 +12,29 @@ type Product = {
     images: string[];
 };
 
-type ProductApiOutline = {
+type ProductDetailsPageData = {
+    title: string;
+    category: string;
+    price: number;
+    brand: string;
+    discountPercentage: number;
+    rating: number;
+    description: string;
+    stock: number;
+    images: string[];
+};
+
+type ProductCardData = {
+    title: string;
+    photo: string;
+    category: string;
+    brand: string;
+    price: number;
+    discountPercentage: number;
+    rating: number;
+};
+
+type ProductApiDetails = {
     total: number;
     skip: number;
     limit: number;
