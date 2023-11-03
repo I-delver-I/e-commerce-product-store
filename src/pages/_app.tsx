@@ -1,11 +1,11 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import SearchAppBar from "@/components/ui/SearchAppBar";
+import AppHeader from "@/components/ui/AppHeader";
 
 export default function App({ Component, pageProps }: AppProps) {
   return <>
     <header>
-      <SearchAppBar />
+      <AppHeader />
     </header>
     <Component {...pageProps} />
   </>
