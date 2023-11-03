@@ -1,5 +1,5 @@
 import {Box, Button} from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 type PaginationBarProps = {
     currentPage: number;
@@ -9,14 +9,14 @@ type PaginationBarProps = {
 };
 
 const PaginationBar: React.FC<PaginationBarProps> =
-    ({
-         currentPage,
-         maxPage,
-         onNext,
-         onPrev,
-     }) => {
+    ({currentPage, maxPage, onNext, onPrev,}) => {
+        useEffect(() => {
+            window.scrollTo(0, 0);
+        }, [currentPage]);
+
         return (
-            <Box className="pagination-bar" display={"flex"} flexDirection={"column"} alignItems={"center"} maxWidth={1000}>
+            <Box className="pagination-bar" display={"flex"} flexDirection={"column"} alignItems={"center"}
+                 maxWidth={1000}>
                 <Button className="pagination-button direction" onClick={onPrev} disabled={currentPage === 1}>
                     Previous
                 </Button>
