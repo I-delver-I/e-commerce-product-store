@@ -143,7 +143,6 @@ const AllProducts: NextPage = ({skip: initialSkip, limit, total, products: initi
                 maxPage={maxPage}
                 onNext={next}
                 onPrev={prev}
-                onJump={jump}
             />
         </Box>
     </>);
