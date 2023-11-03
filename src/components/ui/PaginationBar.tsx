@@ -2,7 +2,7 @@ import usePagination from "@/hooks/usePagination";
 import {useEffect} from "react";
 
 export default function PaginationBar({data, totalPagesCount}:
-                                             { data: Product[], totalPagesCount: number, (): Promise<Product[]> }) {
+                                          { data: Product[], totalPagesCount: number }) {
     const {
         next, prev, jump, currentData, currentPage, maxPage
     } = usePagination(data, totalPagesCount);

@@ -67,21 +67,23 @@ export default function SearchAppBar() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                    >
-                        <Link href="../">E-commerce Product Store</Link>
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
+                    <Box sx={{display: "flex", flexWrap: "wrap"}}>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                        >
+                            <Link href="../..">E-commerce Product Store</Link>
+                        </Typography>
+                        <Search>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </Search>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </Box>
