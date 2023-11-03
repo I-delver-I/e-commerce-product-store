@@ -1,18 +1,71 @@
 import {GetStaticProps, InferGetStaticPropsType, NextPage} from "next";
 import axios from "axios";
-import ProductCard from "@/components/product/ProductCard";
 import Head from "next/head";
-import PaginationBar from "@/components/PaginationBar";
-import {useCallback, useState} from "react";
-import Link from "next/link";
+import PaginationBar from "@/components/ui/PaginationBar";
+import {ReactNode, useCallback, useState} from "react";
+import ProductCards from "@/components/product/card/ProductCards";
+import {lime} from "@mui/material/colors";
+import productId from "@/pages/[productId]";
+import {number} from "prop-types";
 
 const apiUrl = "https://dummyjson.com/products";
-const productsCountPerPage = 10;
 
-let total: number;
-let limit: number;
+export async function getAllProductIds() {
+    // try {
+    //     const apiUrl = "/api/product";
+    //     const response = await axios.get<number[]>(apiUrl);
+    //
+    //     if (response.status !== 200) {
+    //         throw new Error('Failed to fetch product data');
+    //     }
+    //
+    //     const productIds = response.data;
+    //
+    //     return productIds.map(productId => {
+    //         return {
+    //             params: {
+    //                 productId: productId.toString(),
+    //             },
+    //         };
+    //     });
+    // }
+    // catch (err) {
+    //     console.error('Error fetching product IDs:', err);
+    //     return [];
+    // }
 
-const fetchProducts = async (apiUrl: string, skip: number, count: number = productsCountPerPage) => {
+    const products = await fetchAllProducts(apiUrl);
+
+    return products.map(product => {
+        return {
+            params: {
+                productId: product.id.toString(),
+            }
+        }
+    });
+}
+
+const fetchAllProducts = async (apiUrl: string) => {
+    let {skip} = await getProductApiDetails();
+
+    let result: Product[] = [];
+    let tempSkip = skip;
+
+    while (true) {
+        const fetchedProducts = await fetchProducts(apiUrl, tempSkip);
+
+        if (fetchedProducts.length === 0) {
+            break;
+        }
+
+        result = result.concat(fetchedProducts);
+        tempSkip += fetchedProducts.length;
+    }
+
+    return result;
+}
+
+const fetchProducts = async (apiUrl: string, skip: number) => {
     let result: Product[] = [];
 
     try {
@@ -23,47 +76,62 @@ const fetchProducts = async (apiUrl: string, skip: number, count: number = produ
         console.error("Error fetching products:", err);
     }
 
-    return result.slice(0, count);
+    return result;
 };
 
+const getProductApiDetails = async () => {
+    let result: ProductApiDetails = {total: 0, skip: 0, limit: 0};
+
+    try {
+        result = (await axios.get<ProductApiDetails>(apiUrl)).data;
+    } catch (err) {
+        console.error("Error fetching api details:", err);
+    }
+
+    return {...result}
+};
+
+const productsCountPerPage = 10;
+
 export const getStaticProps: GetStaticProps = async () => {
-    const productApiOutline = await axios.get<ProductApiOutline>(apiUrl);
-    limit = productApiOutline.data.limit;
-    total = productApiOutline.data.total;
+    const {total, limit} = await getProductApiDetails();
 
     const products = await fetchProducts(apiUrl, 0);
+    // const products = await fetchAllProducts(apiUrl);
 
     return {
         props: {
-            products: products
+            limit: limit,
+            total: total,
+            products: products.slice(0, productsCountPerPage),
         }
     };
 };
 
-const AllProducts: NextPage = ({products}: InferGetStaticPropsType<typeof getStaticProps>) => {
+export async function getProductData(id: number) {
+    const products = await fetchAllProducts(apiUrl);
+    const result = products.find(product =>
+        product.id === id);
+
+    if (!result) {
+        throw new Error(`Product with id ${id} not found`);
+    }
+
+    return result;
+}
+
+const AllProducts: NextPage = ({limit, total, products}: InferGetStaticPropsType<typeof getStaticProps>) => {
     const totalPagesCount = Math.ceil(total / productsCountPerPage);
     const [skip] = useState(0);
-    useCallback(() =>
-        fetchProducts(apiUrl, skip), []);
+
+    console.log("All products render")
+
     return (<>
         <Head>
             <title>All Products</title>
         </Head>
         <main style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
-            {products.map((product: Product) => {
-                return <Link key={product.title} href="./product/product-details/">
-                    <ProductCard
-                        title={product.title}
-                        key={product.id}
-                        photo={product.images[0]}
-                        brand={product.brand}
-                        category={product.category}
-                        discount={product.discountPercentage}
-                        price={product.price}
-                        rating={product.rating}
-                    />
-                </Link>;
-            })}
+            <ProductCards products={products}/>
         </main>
         <PaginationBar data={products} totalPagesCount={totalPagesCount}/>
     </>);
