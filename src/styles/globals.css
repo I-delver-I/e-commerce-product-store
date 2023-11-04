@@ -20,12 +20,14 @@
   margin: 10px 0;
 }
 
-.pagination-button {
+.pagination-button.direction {
   background-color: green;
-  color: #fff;
+  color: orange;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   margin: 0 5px;
   font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }

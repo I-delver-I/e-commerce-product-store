@@ -17,8 +17,7 @@ const PaginationBar: React.FC<PaginationBarProps> =
         return (
             <Box className="pagination-bar" display={"flex"} flexDirection={"column"} alignItems={"center"}
                  maxWidth={1000}>
-                <Button sx={{backgroundColor: "green", color: "#fff"}} className="pagination-button" onClick={onPrev}
-                        disabled={currentPage === 1}>
+                <Button className="pagination-button direction" onClick={onPrev} disabled={currentPage === 1}>
                     Previous
                 </Button>
                 <Box padding="10px" display={"flex"} justifyContent={"center"} flexWrap={"wrap"}>
@@ -32,8 +31,7 @@ const PaginationBar: React.FC<PaginationBarProps> =
                         </Button>
                     ))}
                 </Box>
-                <Button sx={{backgroundColor: "green", color: "#fff"}} className="pagination-button" onClick={onNext}
-                        disabled={currentPage === maxPage}>
+                <Button className="pagination-button direction" onClick={onNext} disabled={currentPage === maxPage}>
                     Next
                 </Button>
             </Box>

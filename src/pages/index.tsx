@@ -4,7 +4,7 @@ import Head from "next/head";
 import PaginationBar from "@/components/ui/PaginationBar";
 import {Dispatch, SetStateAction, useState} from "react";
 import ProductCards from "@/components/product/card/ProductCards";
-import usePagination from "@/hooks/usePagination";
+import {usePagination} from "@/hooks/usePagination";
 import Box from "@mui/material/Box";
 
 const allProductsApiUrl = "https://dummyjson.com/products";
