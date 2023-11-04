@@ -9,7 +9,7 @@ type UsePaginationProps<T> = {
     onDataFetch: HandleProductFetch<T>;
 };
 
-export function usePagination<T>({initialData, pagesCount, itemsPerPage, onDataFetch}: UsePaginationProps<T>) {
+export default function usePagination<T>({initialData, pagesCount, itemsPerPage, onDataFetch}: UsePaginationProps<T>) {
     const [currentPage, setCurrentPage] = useState(1);
     const [data, setData] = useState(() => initialData);
 
